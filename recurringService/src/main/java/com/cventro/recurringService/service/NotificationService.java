@@ -34,8 +34,10 @@ public class NotificationService {
     }
 
     public void deleteNotificationEvent(String eventId){
-        NotificationEvent existing = getNotificationEventById(eventId);
-        repository.delete(existing);
+        if (!repository.existsById(eventId)) {
+            return;
+        }
+        repository.deleteById(eventId);
     }
 
     public NotificationEvent updateNotification(String eventId, NotificationEvent updatedEvent) {
@@ -45,8 +47,13 @@ public class NotificationService {
         existing.setStatus(updatedEvent.getStatus());
         existing.setSentCount(updatedEvent.getSentCount());
         existing.setRetryCount(updatedEvent.getRetryCount());
-        existing.setLastTriggerTime(LocalDateTime.now());
-        existing.setLastRetryTime(LocalDateTime.now());
+        if (updatedEvent.getLastTriggerTime() != null) {
+            existing.setLastTriggerTime(updatedEvent.getLastTriggerTime());
+        }
+
+        if (updatedEvent.getLastRetryTime() != null) {
+            existing.setLastRetryTime(updatedEvent.getLastRetryTime());
+        }
 
         return repository.save(existing);
     }
