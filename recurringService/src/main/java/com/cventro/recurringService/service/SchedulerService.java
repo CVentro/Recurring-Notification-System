@@ -1,6 +1,5 @@
-package com.cventro.recurringService;
+package com.cventro.recurringService.service;
 
-import com.cventro.recurringService.service.MessageProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,9 +15,9 @@ public class SchedulerService {
     }
 
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 300000000)
     public void scheduledNotification(){
-        log.info("Sending Data to Kafka after 10 seconds");
+        log.info("Sending Data to Kafka after 30 seconds");
         messageProducer.sendMessage("Message for Kafka");
     }
 
