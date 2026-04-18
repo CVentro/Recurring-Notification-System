@@ -44,16 +44,19 @@ public class NotificationService {
 
         NotificationEvent existing = getNotificationEventById(eventId);
 
-        existing.setStatus(updatedEvent.getStatus());
-        existing.setSentCount(updatedEvent.getSentCount());
-        existing.setRetryCount(updatedEvent.getRetryCount());
-        if (updatedEvent.getLastTriggerTime() != null) {
-            existing.setLastTriggerTime(updatedEvent.getLastTriggerTime());
+        if (updatedEvent.getStatus() != null) {
+            existing.setStatus(updatedEvent.getStatus());
         }
 
-        if (updatedEvent.getLastRetryTime() != null) {
-            existing.setLastRetryTime(updatedEvent.getLastRetryTime());
+        if (updatedEvent.getSentCount() != 0) {
+            existing.setSentCount(updatedEvent.getSentCount());
         }
+
+        if (updatedEvent.getRetryCount() != 0) {
+            existing.setRetryCount(updatedEvent.getRetryCount());
+        }
+
+        existing.setLastTriggerTime(LocalDateTime.now());
 
         return repository.save(existing);
     }

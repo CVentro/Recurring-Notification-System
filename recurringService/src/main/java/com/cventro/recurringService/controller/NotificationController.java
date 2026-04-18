@@ -3,10 +3,10 @@ package com.cventro.recurringService.controller;
 import com.cventro.recurringService.entity.NotificationEvent;
 import com.cventro.recurringService.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -27,15 +27,31 @@ public class NotificationController {
         return ResponseEntity.ok(service.getAllNotificationEvents());
     }
 
-    @GetMapping("/get-event/{id}")
-    public ResponseEntity<NotificationEvent> getEventById(@PathVariable("id") String id){
-        return ResponseEntity.ok(service.getNotificationEventById(id));
+    @PostMapping("/get-event")
+    public ResponseEntity<NotificationEvent> getEventById(@RequestBody HashMap<String, Object> body){
+        String eventId = (String) body.get("eventId");
+        return ResponseEntity.ok(service.getNotificationEventById(eventId));
     }
 
-    @PatchMapping("/update-event/{id}")
-    public ResponseEntity<NotificationEvent> updateEvent(@PathVariable("id") String id ,
-                                                         @RequestBody NotificationEvent newEvent){
-        return ResponseEntity.ok(service.updateNotification(id,newEvent));
+    @PostMapping("/update-event")
+    public ResponseEntity<NotificationEvent> updateEvent(@RequestBody HashMap<String, Object> body){
+
+        String eventId = (String) body.get("eventId");
+        NotificationEvent updatedEvent = new NotificationEvent();
+
+        if (body.get("status") != null) {
+            updatedEvent.setStatus((String) body.get("status"));
+        }
+
+        if (body.get("sentCount") != null) {
+            updatedEvent.setSentCount((Integer) body.get("sentCount"));
+        }
+
+        if (body.get("retryCount") != null) {
+            updatedEvent.setRetryCount((Integer) body.get("retryCount"));
+        }
+
+        return ResponseEntity.ok(service.updateNotification(eventId, updatedEvent));
     }
 
     @DeleteMapping("/delete-event/{id}")
