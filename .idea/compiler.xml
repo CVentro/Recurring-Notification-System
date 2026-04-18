@@ -2,11 +2,13 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gatewayServer" />
+        <module name="infaService" />
         <module name="recurringService" />
         <module name="eurekaServer" />
         <module name="notificationService" />
@@ -17,6 +19,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="eurekaServer" options="-parameters" />
       <module name="gatewayServer" options="-parameters" />
+      <module name="infaService" options="-parameters" />
       <module name="notificationService" options="-parameters" />
       <module name="recurringService" options="-parameters" />
     </option>
