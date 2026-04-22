@@ -1,5 +1,9 @@
 package com.cventro.recurringService.entity;
 
+import com.cventro.recurringService.dto.PayLoad;
+import com.cventro.recurringService.enums.NotificationType;
+import com.cventro.recurringService.enums.ScheduledType;
+import com.cventro.recurringService.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,27 +27,29 @@ public class NotificationEvent {
     private String userId;
 
     // EMAIL | SMS | PUSH
-    private String type;
+    private NotificationType type;
 
     // ONE_TIME | RECURRING | FIXED_COUNT
-    private String scheduleType;
+    private ScheduledType scheduleType;
 
     // Flexible payload
-    private Map<String, Object> payload;
+    private PayLoad payload;
 
-    // CREATED | SCHEDULED | PROCESSING | RETRYING | FAILED | COMPLETED | CANCELLED
-    private String status;
+    private Status status;
 
     private LocalDateTime lastTriggerTime;
-    private String intervalMs;
 
-    private int sentCount;
-    private int maxCount;
+    // Interval - Interval between the recurring notifications
+    private long intervalMs;
 
-    private int retryCount;
-    private int maxRetryCount;
+    private long sentCount;
+    private long maxCount;
+
+    // Parameters for Retry Logic
+    private long retryCount;
+    private long maxRetryCount;
     private LocalDateTime lastRetryTime;
-    private String retryBackoffMs;
+    private long retryBackoffMs;
 
     private LocalDateTime createdAt;
     private LocalDateTime expireAt;

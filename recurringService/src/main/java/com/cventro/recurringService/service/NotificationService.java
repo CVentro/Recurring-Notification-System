@@ -1,6 +1,7 @@
 package com.cventro.recurringService.service;
 
 import com.cventro.recurringService.entity.NotificationEvent;
+import com.cventro.recurringService.enums.Status;
 import com.cventro.recurringService.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,14 @@ public class NotificationService {
     public NotificationEvent createNotificationEvent(NotificationEvent event){
         event.setEventId(UUID.randomUUID().toString());
         event.setCreatedAt(LocalDateTime.now());
-        event.setStatus("CREATED");
+        event.setExpireAt(LocalDateTime.now());
+        event.setLastTriggerTime(LocalDateTime.now());
+        event.setStatus(Status.CREATED);
         event.setSentCount(0);
         event.setRetryCount(0);
+        event.setMaxRetryCount(3);
+        event.setMaxCount(0);
+        event.setRetryBackoffMs(10000);
         return repository.save(event);
     }
 

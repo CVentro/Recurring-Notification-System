@@ -33,26 +33,26 @@ public class NotificationController {
         return ResponseEntity.ok(service.getNotificationEventById(eventId));
     }
 
-    @PostMapping("/update-event")
-    public ResponseEntity<NotificationEvent> updateEvent(@RequestBody HashMap<String, Object> body){
-
-        String eventId = (String) body.get("eventId");
-        NotificationEvent updatedEvent = new NotificationEvent();
-
-        if (body.get("status") != null) {
-            updatedEvent.setStatus((String) body.get("status"));
-        }
-
-        if (body.get("sentCount") != null) {
-            updatedEvent.setSentCount((Integer) body.get("sentCount"));
-        }
-
-        if (body.get("retryCount") != null) {
-            updatedEvent.setRetryCount((Integer) body.get("retryCount"));
-        }
-
-        return ResponseEntity.ok(service.updateNotification(eventId, updatedEvent));
-    }
+//    @PostMapping("/update-event")
+//    public ResponseEntity<NotificationEvent> updateEvent(@RequestBody HashMap<String, Object> body){
+//
+//        String eventId = (String) body.get("eventId");
+//        NotificationEvent updatedEvent = new NotificationEvent();
+//
+//        if (body.get("status") != null) {
+//            updatedEvent.setStatus((String) body.get("status"));
+//        }
+//
+//        if (body.get("sentCount") != null) {
+//            updatedEvent.setSentCount((Integer) body.get("sentCount"));
+//        }
+//
+//        if (body.get("retryCount") != null) {
+//            updatedEvent.setRetryCount((Integer) body.get("retryCount"));
+//        }
+//
+//        return ResponseEntity.ok(service.updateNotification(eventId, updatedEvent));
+//    }
 
     @DeleteMapping("/delete-event/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable("id") String id) {
