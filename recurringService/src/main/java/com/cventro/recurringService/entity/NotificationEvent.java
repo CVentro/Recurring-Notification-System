@@ -4,6 +4,8 @@ import com.cventro.recurringService.dto.PayLoad;
 import com.cventro.recurringService.enums.NotificationType;
 import com.cventro.recurringService.enums.ScheduledType;
 import com.cventro.recurringService.enums.Status;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,6 +43,15 @@ public class NotificationEvent {
     // Flexible payload
     @Valid
     @NotNull(message = "Payload is required")
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.NAME,
+            include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
+            property = "type"
+    )
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = com.cventro.recurringService.dto.Implementations.EmailPayload.class, name = "EMAIL"),
+            @JsonSubTypes.Type(value = com.cventro.recurringService.dto.Implementations.SMSPayload.class, name = "SMS")
+    })
     private PayLoad payload;
 
     private Status status;

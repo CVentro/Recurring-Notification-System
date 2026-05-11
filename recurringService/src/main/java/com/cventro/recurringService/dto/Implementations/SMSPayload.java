@@ -18,7 +18,7 @@ public class SMSPayload implements PayLoad {
     private  String message;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^\\+?[1-9]\\d{6,14}$", message = "Phone number must be valid")
+    @Pattern(regexp = "^(?:\\+91)?[6-9]\\d{9}$", message = "Phone number must be a valid Indian mobile number")
     private  String phoneNumber;
 
     @Override
