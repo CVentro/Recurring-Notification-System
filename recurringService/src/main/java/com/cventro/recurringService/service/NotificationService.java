@@ -1,6 +1,7 @@
 package com.cventro.recurringService.service;
 
 import com.cventro.recurringService.entity.NotificationEvent;
+import com.cventro.recurringService.enums.ScheduledType;
 import com.cventro.recurringService.enums.Status;
 import com.cventro.recurringService.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class NotificationService {
         event.setSentCount(0);
         event.setRetryCount(0);
         event.setMaxRetryCount(3);
-        event.setMaxCount(0);
+        event.setMaxCount(event.getScheduleType() == ScheduledType.FIXED_RECURRING ? event.getMaxCount() : 0);
         event.setRetryBackoffMs(10000);
         return repository.save(event);
     }

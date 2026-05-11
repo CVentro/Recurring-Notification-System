@@ -7,6 +7,7 @@ import com.cventro.recurringService.enums.Status;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -72,4 +73,12 @@ public class NotificationEvent {
 
     private LocalDateTime createdAt;
     private LocalDateTime expireAt;
+
+    @AssertTrue(message = "maxCount must be greater than 0 for FIXED_RECURRING events")
+    public boolean isMaxCountValidForFixedRecurring() {
+        if (scheduleType != ScheduledType.FIXED_RECURRING) {
+            return true;
+        }
+        return maxCount > 0;
+    }
 }
