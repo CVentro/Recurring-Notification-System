@@ -34,6 +34,11 @@ public class NotificationController {
         return ResponseEntity.ok(service.getNotificationEventById(eventId));
     }
 
+    @PostMapping("/stop-event/{id}")
+    public ResponseEntity<NotificationEvent> stopEvent(@PathVariable("id") String id) {
+        return ResponseEntity.ok(service.stopNotificationEvent(id));
+    }
+
 //    @PostMapping("/update-event")
 //    public ResponseEntity<NotificationEvent> updateEvent(@RequestBody HashMap<String, Object> body){
 //

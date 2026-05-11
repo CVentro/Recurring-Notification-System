@@ -1,8 +1,7 @@
 package com.cventro.recurringService.controller;
 
 import com.cventro.recurringService.entity.NotificationEvent;
-import com.cventro.recurringService.enums.NotificationType;
-import com.cventro.recurringService.enums.ScheduledType;
+import com.cventro.recurringService.enums.Status;
 import com.cventro.recurringService.service.NotificationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -14,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(NotificationController.class)
@@ -66,5 +66,20 @@ class NotificationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void stopEventCancelsEventById() throws Exception {
+        NotificationEvent cancelledEvent = NotificationEvent.builder()
+                .eventId("event-1")
+                .status(Status.CANCELLED)
+                .build();
+
+        when(notificationService.stopNotificationEvent("event-1")).thenReturn(cancelledEvent);
+
+        mockMvc.perform(post("/api/v1/events/stop-event/event-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.eventId").value("event-1"))
+                .andExpect(jsonPath("$.status").value("CANCELLED"));
     }
 }

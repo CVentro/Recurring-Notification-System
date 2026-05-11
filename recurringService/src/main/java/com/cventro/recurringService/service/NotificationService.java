@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,6 +47,13 @@ public class NotificationService {
             return;
         }
         repository.deleteById(eventId);
+    }
+
+    public NotificationEvent stopNotificationEvent(String eventId) {
+        NotificationEvent existing = getNotificationEventById(eventId);
+        existing.setStatus(Status.CANCELLED);
+        existing.setLastTriggerTime(LocalDateTime.now());
+        return repository.save(existing);
     }
 
     public NotificationEvent updateNotification(String eventId, NotificationEvent updatedEvent) {
