@@ -2,6 +2,7 @@ package com.cventro.recurringService.controller;
 
 import com.cventro.recurringService.entity.NotificationEvent;
 import com.cventro.recurringService.service.NotificationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class NotificationController {
     private final NotificationService service;
 
     @PostMapping("/create-event")
-    public ResponseEntity<NotificationEvent> createEvent(@RequestBody NotificationEvent event){
+    public ResponseEntity<NotificationEvent> createEvent(@Valid @RequestBody NotificationEvent event){
         NotificationEvent newEvent = service.createNotificationEvent(event);
         return ResponseEntity.ok(newEvent);
     }

@@ -35,6 +35,10 @@ public class NotificationService {
                 .orElseThrow( () -> new RuntimeException("Notification Not Found"));
     }
 
+    public List<NotificationEvent> findByStatus(Status status){
+        return repository.findByStatus(status);
+    }
+
     public List<NotificationEvent> getAllNotificationEvents(){
         return repository.findAll();
     }
