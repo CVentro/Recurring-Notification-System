@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends MongoRepository<NotificationEvent , String> {
     List<NotificationEvent> findByStatus(Status status);
+    List<NotificationEvent> findByStatusIn(List<Status> statuses);
 }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @Service
 @Slf4j
 public class SchedulerService {
@@ -26,7 +28,7 @@ public class SchedulerService {
     public void scheduledNotification(){
         log.info("Finding the notifications with Status as CREATED");
 
-        List<NotificationEvent> listofCreatedNotifications =  notificationService.findByStatus(Status.CREATED);
+        List<NotificationEvent> listofCreatedNotifications =  notificationService.findByStatuses(asList(Status.CREATED , Status.SCHEDULED));
         log.info("List of Created Notifications {}" , listofCreatedNotifications);
 
         messageProducer.sendMessage("Message for Kafka");

@@ -39,6 +39,10 @@ public class NotificationService {
         return repository.findByStatus(status);
     }
 
+    public List<NotificationEvent> findByStatuses(List<Status> statuses) {
+        return repository.findByStatusIn(statuses);
+    }
+
     public List<NotificationEvent> getAllNotificationEvents(){
         return repository.findAll();
     }
