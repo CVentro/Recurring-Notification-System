@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,37 @@ public class NotificationService {
         return repository.findByStatus(status);
     }
 
+    public List<NotificationEvent> findDueCreatedEvents(LocalDateTime now){
+        List<NotificationEvent> createdEvents = repository.findByStatus(Status.CREATED);
+        List<NotificationEvent> dueEvents = new ArrayList<>();
+
+        for(NotificationEvent event : createdEvents){
+            if (isDue(event, now)) {
+                dueEvents.add(event);
+            }
+        }
+        return dueEvents;
+    }
+
+    public NotificationEvent markTriggered(String eventId, LocalDateTime triggerTime) {
+        NotificationEvent existing = getNotificationEventById(eventId);
+        existing.setLastTriggerTime(triggerTime);
+        existing.setSentCount(existing.getSentCount() + 1);
+        return repository.save(existing);
+    }
+
+    private boolean isDue(NotificationEvent event,LocalDateTime now){
+        if(event.getLastTriggerTime()==null){
+            return true;
+        }
+        long intervalMs = event.getIntervalMs();
+        if(intervalMs<=0){
+            return event.getSentCount()==0;
+        }
+
+        LocalDateTime nextTriggerTime = event.getLastTriggerTime().plusNanos(intervalMs * 1_000_000);
+        return !now.isBefore(nextTriggerTime);
+    }
     public List<NotificationEvent> findByStatuses(List<Status> statuses) {
         return repository.findByStatusIn(statuses);
     }

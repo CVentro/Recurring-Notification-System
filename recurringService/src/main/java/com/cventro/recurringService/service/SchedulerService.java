@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -26,12 +27,16 @@ public class SchedulerService {
 
     @Scheduled(fixedRate = 10000)
     public void scheduledNotification(){
-        log.info("Finding the notifications with Status as CREATED");
+        LocalDateTime now = LocalDateTime.now();
+        log.info("Finding due notifications to publish at {}", now);
 
-        List<NotificationEvent> listofCreatedNotifications =  notificationService.findByStatuses(asList(Status.CREATED , Status.SCHEDULED));
-        log.info("List of Created Notifications {}" , listofCreatedNotifications);
+        List<NotificationEvent> dueEvents = notificationService.findDueCreatedEvents(now);
+        log.info("Due events count: {}", dueEvents.size());
 
-        messageProducer.sendMessage("Message for Kafka");
+        for (NotificationEvent event : dueEvents) {
+            messageProducer.sendMessage(event);
+            notificationService.markTriggered(event.getEventId(), now);
+        }
     }
 
 }

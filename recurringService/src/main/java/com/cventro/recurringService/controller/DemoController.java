@@ -13,7 +13,6 @@ public class DemoController {
 
     @GetMapping("/demo")
     public String demo(){
-        messageProducer.sendMessage("Message Sent to Notificatioon system");
-        return  "Message Sent";
+        return "Recurring service is running";
     }
 }
