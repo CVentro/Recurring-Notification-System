@@ -26,12 +26,14 @@ public class SchedulerService {
 
     @Scheduled(fixedRate = 10000)
     public void scheduledNotification(){
-        log.info("Finding the notifications with Status as CREATED");
+        log.info("Finding notifications to publish");
 
-        List<NotificationEvent> listofCreatedNotifications =  notificationService.findByStatuses(asList(Status.CREATED , Status.SCHEDULED));
-        log.info("List of Created Notifications {}" , listofCreatedNotifications);
+        List<NotificationEvent> listofCreatedNotifications =
+                notificationService.findByStatuses(asList(Status.CREATED, Status.SCHEDULED));
+        log.info("Fetched {} notifications", listofCreatedNotifications.size());
 
-        messageProducer.sendMessage("Message for Kafka");
+        for (NotificationEvent event : listofCreatedNotifications) {
+            messageProducer.sendMessage(event);
+        }
     }
-
 }
