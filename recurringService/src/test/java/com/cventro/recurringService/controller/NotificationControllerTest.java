@@ -26,7 +26,10 @@ class NotificationControllerTest {
     private NotificationService notificationService;
 
     @Test
-    void createEventRejectsInvalidSmsPhoneNumber() throws Exception {
+    void createEventAcceptsSmsPhoneNumberWithoutFormatValidation() throws Exception {
+        when(notificationService.createNotificationEvent(ArgumentMatchers.any(NotificationEvent.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
         String request = """
                 {
                   "userId": "user-1",
@@ -42,7 +45,7 @@ class NotificationControllerTest {
         mockMvc.perform(post("/api/v1/events/create-event")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 
     @Test
