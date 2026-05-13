@@ -2,6 +2,7 @@ package com.cventro.notificationService.service;
 
 import com.cventro.notificationService.entity.NotificationEvent;
 import com.cventro.notificationService.enums.ScheduledType;
+import com.cventro.notificationService.enums.Status;
 import com.cventro.notificationService.repository.NotificationRepository;
 import com.cventro.notificationService.service.notificationSuccess.NotificationSuccessContext;
 import com.cventro.notificationService.service.notificationSuccess.NotificationSuccessStrategy;
@@ -75,6 +76,44 @@ public class NotificationService {
         );
     }
 
+    public boolean markNotificationRetry(String eventId) {
+        Document document = getRetryDocument(eventId);
+        long retryCount = getLongValue(document, "retryCount");
+        long maxRetryCount = getLongValue(document, "maxRetryCount");
+        LocalDateTime now = LocalDateTime.now();
+
+        if (getStatusValue(document) == Status.CANCELLED) {
+            return false;
+        }
+
+        if (retryCount >= maxRetryCount) {
+            markNotificationCancelled(eventId);
+            return false;
+        }
+
+        long nextRetryCount = retryCount + 1;
+        Update update = new Update()
+                .set("lastRetryTime", now)
+                .set("retryCount", nextRetryCount)
+                .set("status", Status.RETRYING);
+
+        mongoTemplate.updateFirst(
+                Query.query(where("_id").is(eventId)),
+                update,
+                NotificationEvent.class
+        );
+
+        return true;
+    }
+
+    public void markNotificationCancelled(String eventId) {
+        mongoTemplate.updateFirst(
+                Query.query(where("_id").is(eventId)),
+                new Update().set("status", Status.CANCELLED),
+                NotificationEvent.class
+        );
+    }
+
     private NotificationSuccessContext getNotificationSuccessContext(String eventId, ScheduledType scheduleType) {
         if (scheduleType != ScheduledType.FIXED_RECURRING) {
             return NotificationSuccessContext.empty();
@@ -100,6 +139,33 @@ public class NotificationService {
             return number.longValue();
         }
         return 0;
+    }
+
+    private Status getStatusValue(Document document) {
+        Object value = document.get("status");
+        if (value instanceof Status status) {
+            return status;
+        }
+        if (value instanceof String status) {
+            return Status.valueOf(status);
+        }
+        return null;
+    }
+
+    private Document getRetryDocument(String eventId) {
+        Query query = Query.query(where("_id").is(eventId));
+        query.fields()
+                .include("status")
+                .include("retryCount")
+                .include("maxRetryCount")
+                .include("lastRetryTime")
+                .include("retryBackoffMs");
+
+        Document document = mongoTemplate.findOne(query, Document.class, "notifications");
+        if (document == null) {
+            throw new RuntimeException("Notification Not Found");
+        }
+        return document;
     }
 
 }

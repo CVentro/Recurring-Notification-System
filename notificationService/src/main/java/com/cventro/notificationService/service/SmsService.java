@@ -18,5 +18,6 @@ public class SmsService implements NotificationSender {
     @Override
     public void send(KafkaPayload message) {
         log.info("Sending SMS for eventId={}", message.getEventId());
+        throw new RuntimeException("Manual SMS failure for retry testing");
     }
 }

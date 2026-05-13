@@ -24,7 +24,7 @@ public class NotificationService {
         event.setStatus(Status.CREATED);
         event.setSentCount(0);
         event.setRetryCount(0);
-        event.setMaxRetryCount(3);
+        event.setMaxRetryCount(5);
         event.setMaxCount(event.getScheduleType() == ScheduledType.FIXED_RECURRING ? event.getMaxCount() : 0);
         event.setRetryBackoffMs(5000);
         return repository.save(event);
