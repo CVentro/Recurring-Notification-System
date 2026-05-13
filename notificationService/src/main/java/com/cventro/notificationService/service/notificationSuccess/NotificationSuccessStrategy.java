@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 public interface NotificationSuccessStrategy {
     boolean supports(ScheduledType scheduleType);
 
-    void apply(Update update, LocalDateTime triggeredAt);
+    void apply(Update update, LocalDateTime triggeredAt, NotificationSuccessContext context);
 }

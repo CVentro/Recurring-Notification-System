@@ -16,7 +16,7 @@ public class FixedNotificationSuccessStrategy implements NotificationSuccessStra
     }
 
     @Override
-    public void apply(Update update, LocalDateTime triggeredAt) {
+    public void apply(Update update, LocalDateTime triggeredAt, NotificationSuccessContext context) {
         update.set("status", Status.CANCELLED);
     }
 }

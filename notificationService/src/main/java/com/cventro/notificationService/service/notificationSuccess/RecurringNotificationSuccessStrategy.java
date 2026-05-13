@@ -1,6 +1,7 @@
 package com.cventro.notificationService.service.notificationSuccess;
 
 import com.cventro.notificationService.enums.ScheduledType;
+import com.cventro.notificationService.enums.Status;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,8 @@ public class RecurringNotificationSuccessStrategy implements NotificationSuccess
     }
 
     @Override
-    public void apply(Update update, LocalDateTime triggeredAt) {
+    public void apply(Update update, LocalDateTime triggeredAt, NotificationSuccessContext context) {
         update.set("lastTriggerTime", triggeredAt);
+        update.set("status", Status.SCHEDULED);
     }
 }

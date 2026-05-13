@@ -1,6 +1,7 @@
 package com.cventro.notificationService.service.notificationSuccess;
 
 import com.cventro.notificationService.enums.ScheduledType;
+import com.cventro.notificationService.enums.Status;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +16,11 @@ public class FixedRecurringNotificationSuccessStrategy implements NotificationSu
     }
 
     @Override
-    public void apply(Update update, LocalDateTime triggeredAt) {
+    public void apply(Update update, LocalDateTime triggeredAt, NotificationSuccessContext context) {
+        long nextSentCount = context.sentCount() + 1;
+
         update.set("lastTriggerTime", triggeredAt);
+        update.set("status", nextSentCount >= context.maxCount() ? Status.CANCELLED : Status.SCHEDULED);
         update.inc("sentCount", 1);
     }
 }
