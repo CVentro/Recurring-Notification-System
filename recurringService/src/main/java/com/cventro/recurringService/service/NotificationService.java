@@ -20,13 +20,13 @@ public class NotificationService {
         event.setEventId(UUID.randomUUID().toString());
         event.setCreatedAt(LocalDateTime.now());
         event.setExpireAt(LocalDateTime.now());
-        event.setLastTriggerTime(LocalDateTime.now());
+        event.setLastTriggerTime(null);
         event.setStatus(Status.CREATED);
         event.setSentCount(0);
         event.setRetryCount(0);
         event.setMaxRetryCount(3);
         event.setMaxCount(event.getScheduleType() == ScheduledType.FIXED_RECURRING ? event.getMaxCount() : 0);
-        event.setRetryBackoffMs(10000);
+        event.setRetryBackoffMs(5000);
         return repository.save(event);
     }
 

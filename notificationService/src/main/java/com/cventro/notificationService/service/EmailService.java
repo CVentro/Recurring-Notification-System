@@ -1,5 +1,8 @@
 package com.cventro.notificationService.service;
 
+import com.cventro.notificationService.dto.KafkaPayload;
+import com.cventro.notificationService.enums.NotificationType;
+import com.cventro.notificationService.service.notificationSender.NotificationSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -7,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class EmailService {
+public class EmailService implements NotificationSender {
 
     private final JavaMailSender mailSender;
 
@@ -31,5 +34,15 @@ public class EmailService {
 //            log.error("Sending email failed", e);
 //            throw new RuntimeException("Email sending failed", e);
 //        }
+    }
+
+    @Override
+    public boolean supports(NotificationType notificationType) {
+        return notificationType == NotificationType.EMAIL;
+    }
+
+    @Override
+    public void send(KafkaPayload message) {
+        sendSimpleMail("b321056@iiit-bh.ac.in" , "Test Fail from Rohan" , "Body is not there , Please proceed to coding");
     }
 }
