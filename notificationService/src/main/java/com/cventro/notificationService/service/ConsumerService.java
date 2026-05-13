@@ -1,21 +1,30 @@
 package com.cventro.notificationService.service;
 
 import com.cventro.notificationService.dto.KafkaPayload;
+import com.cventro.notificationService.enums.NotificationType;
+import com.cventro.notificationService.enums.ScheduledType;
+import com.cventro.notificationService.service.notificationSender.NotificationSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
 public class ConsumerService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final EmailService emailService;
+    private final NotificationService notificationService;
+    private final List<NotificationSender> notificationSenders;
 
-    public ConsumerService(KafkaTemplate<String, Object> kafkaTemplate , EmailService emailService) {
+    public ConsumerService(KafkaTemplate<String, Object> kafkaTemplate,
+                           NotificationService notificationService,
+                           List<NotificationSender> notificationSenders) {
         this.kafkaTemplate = kafkaTemplate;
-        this.emailService = emailService;
+        this.notificationService = notificationService;
+        this.notificationSenders = notificationSenders;
     }
 
     @KafkaListener(topics = "notifications.email.main")
@@ -23,10 +32,17 @@ public class ConsumerService {
         log.info("Message Recieved in Main Topic : {}", message);
 
         try{
-            emailService.sendSimpleMail("b321056@iiit-bh.ac.in" , "Test Fail from Rohan" , "Body is not there , Please proceed to coding");
+            NotificationType notificationType = NotificationType.valueOf(message.getNotificationType());
+            NotificationSender sender = notificationSenders.stream()
+                    .filter(candidate -> candidate.supports(notificationType))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("No sender found for notification type: " + notificationType));
+
+            sender.send(message);
+            notificationService.markNotificationSent(message.getEventId(), ScheduledType.valueOf(message.getScheduledType()));
         }
         catch (Exception c){
-            log.error("Error Recieved from Email Service : " , c);
+            log.error("Error Recieved while processing notification : " , c);
         }
 
 //        kafkaTemplate.send("notifications.email.retry.1m", message + "|1");
