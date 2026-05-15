@@ -1,0 +1,263 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1800" viewBox="0 0 1800 1800" role="img" aria-labelledby="title desc">
+  <title id="title">Recurring Notification System HLD and LLD</title>
+  <desc id="desc">Excalidraw-style high-level and low-level architecture diagram for the recurring notification system.</desc>
+  <defs>
+    <filter id="rough" x="-4%" y="-4%" width="108%" height="108%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="8" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.4"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f2f2f"/>
+    </marker>
+    <style>
+      .bg { fill: #fffaf0; }
+      .title { font: 700 34px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #202124; }
+      .subtitle { font: 18px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #4b5563; }
+      .section { font: 700 25px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #1f2937; }
+      .box { stroke: #2f2f2f; stroke-width: 2.8; rx: 16; ry: 16; filter: url(#rough); }
+      .box-title { font: 700 20px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #111827; }
+      .box-text { font: 16px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #374151; }
+      .tiny { font: 13px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #374151; }
+      .note { font: 15px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #6b4e16; }
+      .arrow { fill: none; stroke: #2f2f2f; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); filter: url(#rough); }
+      .core-arrow { fill: none; stroke: #b45309; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); filter: url(#rough); }
+      .dash { stroke-dasharray: 9 8; }
+      .thin { stroke-width: 2; }
+      .label-bg { fill: #fffaf0; stroke: none; }
+      .label { font: 14px "Comic Sans MS", "Bradley Hand", "Segoe Print", sans-serif; fill: #1f2937; }
+      .pill { stroke: #2f2f2f; stroke-width: 2.1; rx: 18; ry: 18; filter: url(#rough); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1800" height="1800"/>
+  <path d="M45 76 C260 46, 560 48, 777 67" class="arrow thin dash" marker-end="none" opacity=".35"/>
+  <text x="54" y="55" class="title">Recurring Notification System - HLD + LLD</text>
+  <text x="56" y="86" class="subtitle">Spring Boot microservices, Eureka, Gateway, MongoDB, Kafka retries, AWS config/secrets, and observability</text>
+
+  <!-- Client and gateway -->
+  <rect x="70" y="150" width="190" height="95" class="box" fill="#e0f2fe"/>
+  <text x="112" y="185" class="box-title">Client</text>
+  <text x="92" y="213" class="box-text">REST caller</text>
+  <text x="92" y="235" class="tiny">create / stop / delete</text>
+
+  <rect x="335" y="140" width="245" height="118" class="box" fill="#dbeafe"/>
+  <text x="377" y="176" class="box-title">Gateway Server</text>
+  <text x="392" y="203" class="box-text">port 8765</text>
+  <text x="358" y="226" class="tiny">Spring Cloud Gateway</text>
+  <text x="358" y="247" class="tiny">Eureka discovery locator</text>
+
+  <path d="M260 198 C290 198, 304 198, 335 198" class="arrow"/>
+  <rect x="282" y="178" width="36" height="20" class="label-bg"/>
+  <text x="278" y="193" class="label">HTTP</text>
+
+  <rect x="654" y="136" width="254" height="128" class="box" fill="#dcfce7"/>
+  <text x="701" y="172" class="box-title">Recurring Service</text>
+  <text x="742" y="199" class="box-text">port 8001</text>
+  <text x="677" y="222" class="tiny">NotificationController</text>
+  <text x="677" y="243" class="tiny">Scheduler + producer</text>
+
+  <path d="M580 200 C612 198, 627 198, 654 198" class="arrow"/>
+  <rect x="594" y="177" width="49" height="20" class="label-bg"/>
+  <text x="589" y="192" class="label">routes</text>
+
+  <!-- Service discovery -->
+  <rect x="432" y="310" width="250" height="115" class="box" fill="#fef3c7"/>
+  <text x="493" y="346" class="box-title">Eureka Server</text>
+  <text x="520" y="373" class="box-text">port 8761</text>
+  <text x="456" y="397" class="tiny">service registry for all apps</text>
+  <path d="M455 258 C458 281, 469 292, 500 310" class="arrow dash"/>
+  <path d="M760 264 C735 297, 715 315, 682 344" class="arrow dash"/>
+  <text x="588" y="302" class="label">register / discover</text>
+
+  <!-- Mongo and AWS app config -->
+  <rect x="987" y="118" width="230" height="120" class="box" fill="#ede9fe"/>
+  <text x="1045" y="154" class="box-title">MongoDB</text>
+  <text x="1020" y="182" class="box-text">notifications db</text>
+  <text x="1012" y="205" class="tiny">collection: notifications</text>
+  <text x="1012" y="226" class="tiny">status, payload, counts</text>
+  <path d="M908 184 C940 170, 955 170, 987 178" class="arrow"/>
+  <rect x="923" y="146" width="54" height="22" class="label-bg"/>
+  <text x="918" y="162" class="label">CRUD</text>
+
+  <rect x="988" y="278" width="230" height="104" class="box" fill="#ffedd5"/>
+  <text x="1028" y="314" class="box-title">AWS AppConfig</text>
+  <text x="1010" y="343" class="tiny">retryCount + retryInterval</text>
+  <text x="1010" y="364" class="tiny">polled by recurringService</text>
+  <path d="M908 230 C946 250, 962 274, 988 315" class="arrow dash"/>
+  <text x="921" y="274" class="label">config</text>
+
+  <!-- Recurring internals -->
+  <text x="72" y="515" class="section">LLD inside recurringService</text>
+  <rect x="70" y="550" width="260" height="136" class="box" fill="#ecfeff"/>
+  <text x="99" y="586" class="box-title">NotificationController</text>
+  <text x="94" y="615" class="tiny">POST /api/v1/events/create-event</text>
+  <text x="94" y="636" class="tiny">GET /get-all-events</text>
+  <text x="94" y="657" class="tiny">POST /stop-event/{id}</text>
+  <text x="94" y="678" class="tiny">DELETE /delete-event/{id}</text>
+
+  <rect x="400" y="545" width="260" height="148" class="box" fill="#dcfce7"/>
+  <text x="434" y="581" class="box-title">NotificationService</text>
+  <text x="422" y="610" class="tiny">sets eventId, CREATED</text>
+  <text x="422" y="631" class="tiny">sets sent/retry counters</text>
+  <text x="422" y="652" class="tiny">loads RetryConfig</text>
+  <text x="422" y="673" class="tiny">saves NotificationEvent</text>
+
+  <rect x="725" y="545" width="258" height="148" class="box" fill="#d1fae5"/>
+  <text x="776" y="581" class="box-title">SchedulerService</text>
+  <text x="750" y="610" class="tiny">@Scheduled fixedRate 10s</text>
+  <text x="750" y="631" class="tiny">find CREATED/SCHEDULED</text>
+  <text x="750" y="652" class="tiny">check intervalMs for recurring</text>
+  <text x="750" y="673" class="tiny">publish eligible events</text>
+
+  <rect x="1055" y="545" width="250" height="148" class="box" fill="#cffafe"/>
+  <text x="1100" y="581" class="box-title">MessageProducer</text>
+  <text x="1080" y="610" class="tiny">builds KafkaPayload</text>
+  <text x="1080" y="631" class="tiny">eventId</text>
+  <text x="1080" y="652" class="tiny">notificationType</text>
+  <text x="1080" y="673" class="tiny">scheduledType</text>
+
+  <path d="M330 620 C360 620, 372 620, 400 620" class="arrow"/>
+  <path d="M660 620 C690 620, 700 620, 725 620" class="arrow"/>
+  <path d="M983 620 C1012 620, 1025 620, 1055 620" class="arrow"/>
+
+  <!-- Kafka and infra -->
+  <rect x="1362" y="500" width="338" height="236" class="box" fill="#fef9c3"/>
+  <text x="1482" y="536" class="box-title">Kafka</text>
+  <text x="1392" y="567" class="tiny">notifications.email.main</text>
+  <text x="1392" y="594" class="tiny">notifications.email.retry.1m</text>
+  <text x="1392" y="621" class="tiny">notifications.email.retry.5m</text>
+  <text x="1392" y="648" class="tiny">notifications.email.dlq</text>
+  <text x="1392" y="681" class="tiny">3 partitions, replication factor 1</text>
+  <text x="1392" y="705" class="tiny">created/administered by infaService:8010</text>
+  <path d="M1305 620 C1328 620, 1340 620, 1362 620" class="arrow"/>
+  <rect x="1315" y="596" width="41" height="20" class="label-bg"/>
+  <text x="1309" y="611" class="label">send</text>
+  <path d="M900 246 C1032 392, 1195 445, 1362 548" class="core-arrow"/>
+  <rect x="1110" y="428" width="198" height="24" class="label-bg"/>
+  <text x="1115" y="446" class="label">RecurringService publishes to Kafka</text>
+
+  <rect x="1390" y="795" width="302" height="92" class="box" fill="#e0f2fe"/>
+  <text x="1448" y="834" class="box-title">Notification Service</text>
+  <text x="1499" y="861" class="box-text">port 8002</text>
+  <text x="1414" y="883" class="tiny">Kafka consumers + delivery processor</text>
+  <path d="M1532 736 C1532 760, 1532 776, 1532 795" class="arrow"/>
+  <rect x="1548" y="754" width="192" height="21" class="label-bg"/>
+  <text x="1543" y="770" class="label">consume main / retry / dlq</text>
+
+  <rect x="1378" y="290" width="265" height="102" class="box" fill="#fee2e2"/>
+  <text x="1444" y="326" class="box-title">Infa Service</text>
+  <text x="1474" y="353" class="box-text">port 8010</text>
+  <text x="1404" y="376" class="tiny">KafkaAdmin + NewTopic beans</text>
+  <path d="M1512 392 C1518 430, 1525 462, 1529 500" class="arrow dash"/>
+
+  <!-- Notification service internals -->
+  <text x="72" y="808" class="section">LLD inside notificationService</text>
+
+  <rect x="72" y="842" width="260" height="150" class="box" fill="#e0f2fe"/>
+  <text x="120" y="878" class="box-title">ConsumerService</text>
+  <text x="98" y="907" class="tiny">@KafkaListener main</text>
+  <text x="98" y="928" class="tiny">@KafkaListener retry.1m</text>
+  <text x="98" y="949" class="tiny">@KafkaListener retry.5m</text>
+  <text x="98" y="970" class="tiny">@KafkaListener dlq</text>
+
+  <path d="M1362 708 C1110 760, 710 818, 332 906" class="core-arrow"/>
+  <rect x="750" y="782" width="178" height="22" class="label-bg"/>
+  <text x="756" y="798" class="label">KafkaListener consumes</text>
+
+  <rect x="408" y="842" width="260" height="150" class="box" fill="#f0f9ff"/>
+  <text x="472" y="878" class="box-title">Sender Strategy</text>
+  <text x="432" y="908" class="tiny">NotificationSender interface</text>
+  <text x="432" y="929" class="tiny">EmailService sends SMTP mail</text>
+  <text x="432" y="950" class="tiny">SmsService exists; failure test path</text>
+  <text x="432" y="971" class="tiny">@TrackNotificationMetrics</text>
+
+  <rect x="746" y="842" width="270" height="150" class="box" fill="#ede9fe"/>
+  <text x="791" y="878" class="box-title">Success Strategies</text>
+  <text x="770" y="908" class="tiny">FIXED -> CANCELLED</text>
+  <text x="770" y="929" class="tiny">RECURRING -> SCHEDULED</text>
+  <text x="770" y="950" class="tiny">FIXED_RECURRING -> inc sentCount</text>
+  <text x="770" y="971" class="tiny">cancel when sentCount >= maxCount</text>
+
+  <rect x="1092" y="842" width="286" height="150" class="box" fill="#fff7ed"/>
+  <text x="1130" y="878" class="box-title">RetryQueueScheduler</text>
+  <text x="1116" y="908" class="tiny">markNotificationRetry()</text>
+  <text x="1116" y="929" class="tiny">retry.1m delay: 10 seconds</text>
+  <text x="1116" y="950" class="tiny">retry.5m delay: 40 seconds</text>
+  <text x="1116" y="971" class="tiny">dlq delay: 1 minute</text>
+
+  <path d="M332 918 C362 918, 379 918, 408 918" class="arrow"/>
+  <rect x="346" y="895" width="44" height="21" class="label-bg"/>
+  <text x="342" y="911" class="label">send</text>
+  <path d="M668 918 C698 918, 716 918, 746 918" class="arrow"/>
+  <rect x="681" y="895" width="58" height="21" class="label-bg"/>
+  <text x="676" y="911" class="label">success</text>
+  <path d="M332 950 C616 1042, 806 1048, 1092 950" class="arrow"/>
+  <rect x="656" y="1031" width="55" height="21" class="label-bg"/>
+  <text x="650" y="1047" class="label">failure</text>
+
+  <path d="M1378 905 C1438 840, 1352 744, 1362 650" class="arrow dash"/>
+  <rect x="1284" y="761" width="94" height="21" class="label-bg"/>
+  <text x="1278" y="777" class="label">retry publish</text>
+
+  <path d="M881 842 C915 738, 980 635, 1098 238" class="arrow dash"/>
+  <rect x="949" y="736" width="102" height="21" class="label-bg"/>
+  <text x="944" y="752" class="label">Mongo update</text>
+
+  <!-- AWS secrets and delivery -->
+  <rect x="1462" y="925" width="260" height="116" class="box" fill="#ffedd5"/>
+  <text x="1508" y="959" class="box-title">External Delivery</text>
+  <text x="1486" y="987" class="tiny">AWS Secrets Manager</text>
+  <text x="1486" y="1007" class="tiny">mail secret: notification-service/mail</text>
+  <text x="1486" y="1027" class="tiny">JavaMailSender / SMTP</text>
+  <path d="M1540 887 C1558 905, 1574 912, 1592 925" class="arrow"/>
+  <rect x="1560" y="895" width="102" height="21" class="label-bg"/>
+  <text x="1554" y="911" class="label">send email/sms</text>
+  <path d="M668 882 C898 782, 1240 794, 1462 967" class="arrow dash"/>
+  <rect x="1068" y="777" width="114" height="21" class="label-bg"/>
+  <text x="1062" y="793" class="label">credentials + SMTP</text>
+
+  <!-- Observability band -->
+  <rect x="70" y="1050" width="1630" height="92" class="box" fill="#f3f4f6"/>
+  <text x="98" y="1086" class="box-title">Observability</text>
+  <text x="290" y="1086" class="box-text">Prometheus scrapes /actuator/prometheus on recurringService:8001 and notificationService:8002</text>
+  <text x="290" y="1117" class="box-text">Grafana dashboards metrics; Filebeat reads ./logs; Elasticsearch stores logs; Kibana explores logs</text>
+  <path d="M786 693 C764 790, 748 936, 748 1050" class="arrow dash"/>
+  <path d="M1215 992 C1215 1018, 1215 1031, 1215 1050" class="arrow dash"/>
+
+  <!-- Explicit core pipeline -->
+  <text x="72" y="1242" class="section">Core Kafka Flow</text>
+  <rect x="110" y="1275" width="360" height="125" class="box" fill="#dcfce7"/>
+  <text x="180" y="1312" class="box-title">RecurringService</text>
+  <text x="142" y="1342" class="tiny">SchedulerService finds eligible events</text>
+  <text x="142" y="1364" class="tiny">MessageProducer builds KafkaPayload</text>
+  <text x="142" y="1386" class="tiny">eventId + notificationType + scheduledType</text>
+
+  <rect x="690" y="1275" width="330" height="125" class="box" fill="#fef9c3"/>
+  <text x="812" y="1312" class="box-title">Kafka</text>
+  <text x="724" y="1342" class="tiny">notifications.email.main</text>
+  <text x="724" y="1364" class="tiny">retry topics + dlq used on failure</text>
+  <text x="724" y="1386" class="tiny">created by infaService</text>
+
+  <rect x="1240" y="1275" width="360" height="125" class="box" fill="#e0f2fe"/>
+  <text x="1314" y="1312" class="box-title">ConsumerService</text>
+  <text x="1272" y="1342" class="tiny">@KafkaListener consumes main topic</text>
+  <text x="1272" y="1364" class="tiny">also consumes retry.1m, retry.5m, dlq</text>
+  <text x="1272" y="1386" class="tiny">calls sender, success strategy, retry logic</text>
+
+  <path d="M470 1338 C552 1338, 608 1338, 690 1338" class="core-arrow"/>
+  <rect x="512" y="1308" width="134" height="23" class="label-bg"/>
+  <text x="518" y="1325" class="label">publish event</text>
+  <path d="M1020 1338 C1100 1338, 1160 1338, 1240 1338" class="core-arrow"/>
+  <rect x="1078" y="1308" width="116" height="23" class="label-bg"/>
+  <text x="1084" y="1325" class="label">consume event</text>
+
+  <!-- Flow legend -->
+  <rect x="1256" y="116" width="408" height="118" class="box" fill="#ffffff"/>
+  <text x="1284" y="151" class="box-title">Main runtime flow</text>
+  <text x="1284" y="181" class="tiny">1. Client creates event through Gateway</text>
+  <text x="1284" y="202" class="tiny">2. recurringService stores event and schedules publish</text>
+  <text x="1284" y="223" class="tiny">3. notificationService consumes, sends, updates status/retry</text>
+
+  <rect x="1186" y="404" width="384" height="42" class="pill" fill="#ffffff"/>
+  <text x="1211" y="431" class="note">KafkaPayload = eventId + notificationType + scheduledType</text>
+</svg>
