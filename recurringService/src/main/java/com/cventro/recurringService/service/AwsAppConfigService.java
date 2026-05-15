@@ -3,6 +3,7 @@ package com.cventro.recurringService.service;
 import com.cventro.recurringService.configuration.RetryConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.appconfigdata.AppConfigDataClient;
@@ -17,16 +18,28 @@ public class AwsAppConfigService {
 
     private final AppConfigDataClient appConfigDataClient;
     private final ObjectMapper objectMapper;
+    private final String applicationIdentifier;
+    private final String environmentIdentifier;
+    private final String configurationProfileIdentifier;
+    private final int minimumPollIntervalSeconds;
 
     private String configurationToken;
     private RetryConfig cachedConfig = new RetryConfig(1, 1000);
 
     public AwsAppConfigService(
             AppConfigDataClient appConfigDataClient,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            @Value("${aws.appconfig.application-identifier}") String applicationIdentifier,
+            @Value("${aws.appconfig.environment-identifier}") String environmentIdentifier,
+            @Value("${aws.appconfig.configuration-profile-identifier}") String configurationProfileIdentifier,
+            @Value("${aws.appconfig.minimum-poll-interval-seconds}") int minimumPollIntervalSeconds
     ) {
         this.appConfigDataClient = appConfigDataClient;
         this.objectMapper = objectMapper;
+        this.applicationIdentifier = applicationIdentifier;
+        this.environmentIdentifier = environmentIdentifier;
+        this.configurationProfileIdentifier = configurationProfileIdentifier;
+        this.minimumPollIntervalSeconds = minimumPollIntervalSeconds;
     }
 
     public RetryConfig getRetryConfig() {
@@ -34,10 +47,10 @@ public class AwsAppConfigService {
             if (configurationToken == null) {
                 StartConfigurationSessionResponse sessionResponse = appConfigDataClient.startConfigurationSession(
                         StartConfigurationSessionRequest.builder()
-                                .applicationIdentifier("RecurringNotificationService")
-                                .environmentIdentifier("DEV")
-                                .configurationProfileIdentifier("NotificationService-Config")
-                                .requiredMinimumPollIntervalInSeconds(30)
+                                .applicationIdentifier(applicationIdentifier)
+                                .environmentIdentifier(environmentIdentifier)
+                                .configurationProfileIdentifier(configurationProfileIdentifier)
+                                .requiredMinimumPollIntervalInSeconds(minimumPollIntervalSeconds)
                                 .build()
                 );
 

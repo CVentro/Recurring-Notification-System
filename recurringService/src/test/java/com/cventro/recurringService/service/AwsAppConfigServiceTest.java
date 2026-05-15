@@ -26,7 +26,11 @@ class AwsAppConfigServiceTest {
     private final AppConfigDataClient appConfigDataClient = fakeAppConfigDataClient.client();
     private final AwsAppConfigService appConfigService = new AwsAppConfigService(
             appConfigDataClient,
-            new ObjectMapper()
+            new ObjectMapper(),
+            "RecurringNotificationService",
+            "PROD",
+            "NotificationService-Config",
+            30
     );
 
     @Test
@@ -39,6 +43,12 @@ class AwsAppConfigServiceTest {
         assertThat(retryConfig.retryInterval()).isEqualTo(10000);
         assertThat(fakeAppConfigDataClient.startSessionRequests).hasSize(1);
         assertThat(fakeAppConfigDataClient.getLatestConfigurationRequests).hasSize(1);
+
+        StartConfigurationSessionRequest sessionRequest = fakeAppConfigDataClient.startSessionRequests.get(0);
+        assertThat(sessionRequest.applicationIdentifier()).isEqualTo("RecurringNotificationService");
+        assertThat(sessionRequest.environmentIdentifier()).isEqualTo("PROD");
+        assertThat(sessionRequest.configurationProfileIdentifier()).isEqualTo("NotificationService-Config");
+        assertThat(sessionRequest.requiredMinimumPollIntervalInSeconds()).isEqualTo(30);
     }
 
     @Test
