@@ -51,6 +51,9 @@ class ConsumerServiceKafkaIntegrationTest {
     private NotificationService notificationService;
 
     @MockBean
+    private RetryQueueSchedulerService retryQueueSchedulerService;
+
+    @MockBean
     private NotificationSender notificationSender;
 
     @Autowired

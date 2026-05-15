@@ -1,11 +1,14 @@
 package com.cventro.notificationService.service;
 
+import com.cventro.notificationService.dto.Implementations.EmailPayload;
 import com.cventro.notificationService.entity.NotificationEvent;
+import com.cventro.notificationService.enums.NotificationType;
 import com.cventro.notificationService.enums.ScheduledType;
 import com.cventro.notificationService.enums.Status;
 import com.cventro.notificationService.repository.NotificationRepository;
 import com.cventro.notificationService.service.notificationSuccess.NotificationSuccessContext;
 import com.cventro.notificationService.service.notificationSuccess.NotificationSuccessStrategy;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,6 +26,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class NotificationService {
     private final NotificationRepository repository;
     private final MongoTemplate mongoTemplate;
+    private final ObjectMapper objectMapper;
     private final List<NotificationSuccessStrategy> notificationSuccessStrategies;
 
 
@@ -112,6 +116,28 @@ public class NotificationService {
                 new Update().set("status", Status.CANCELLED),
                 NotificationEvent.class
         );
+    }
+
+    public EmailPayload getEmailPayload(String eventId) {
+        Query query = Query.query(where("_id").is(eventId));
+        query.fields().include("type").include("payload");
+
+        Document notificationEvent = mongoTemplate.findOne(query, Document.class, "notifications");
+        if (notificationEvent == null) {
+            throw new RuntimeException("Notification Not Found");
+        }
+
+        Object notificationType = notificationEvent.get("type");
+        if (notificationType == null || !NotificationType.EMAIL.name().equals(notificationType.toString())) {
+            throw new IllegalStateException("Notification event " + eventId + " is not an email notification");
+        }
+
+        Object payload = notificationEvent.get("payload");
+        if (payload == null) {
+            throw new IllegalStateException("Notification event " + eventId + " does not contain a payload");
+        }
+
+        return objectMapper.convertValue(payload, EmailPayload.class);
     }
 
     private NotificationSuccessContext getNotificationSuccessContext(String eventId, ScheduledType scheduleType) {
