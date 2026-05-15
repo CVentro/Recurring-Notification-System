@@ -1,5 +1,6 @@
 package com.cventro.recurringService.service;
 
+import com.cventro.recurringService.configuration.RetryConfig;
 import com.cventro.recurringService.entity.NotificationEvent;
 import com.cventro.recurringService.enums.NotificationType;
 import com.cventro.recurringService.enums.ScheduledType;
@@ -25,6 +26,9 @@ class NotificationServiceTest {
     @Mock
     private NotificationRepository repository;
 
+    @Mock
+    private AwsAppConfigService awsAppConfigService;
+
     @InjectMocks
     private NotificationService notificationService;
 
@@ -40,6 +44,8 @@ class NotificationServiceTest {
 
         when(repository.save(any(NotificationEvent.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+        when(awsAppConfigService.getRetryConfig())
+                .thenReturn(new RetryConfig(3, 10_000));
 
         NotificationEvent result = notificationService.createNotificationEvent(input);
 
@@ -53,7 +59,7 @@ class NotificationServiceTest {
         assertEquals(7, result.getMaxCount());
         assertNotNull(result.getCreatedAt());
         assertNotNull(result.getExpireAt());
-        assertNotNull(result.getLastTriggerTime());
+        assertNull(result.getLastTriggerTime());
 
         ArgumentCaptor<NotificationEvent> captor = ArgumentCaptor.forClass(NotificationEvent.class);
         verify(repository).save(captor.capture());
@@ -72,10 +78,14 @@ class NotificationServiceTest {
 
         when(repository.save(any(NotificationEvent.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+        when(awsAppConfigService.getRetryConfig())
+                .thenReturn(new RetryConfig(4, 15_000));
 
         NotificationEvent result = notificationService.createNotificationEvent(input);
 
         assertEquals(0, result.getMaxCount());
+        assertEquals(4, result.getMaxRetryCount());
+        assertEquals(15_000, result.getRetryBackoffMs());
         assertNotNull(result.getEventId());
         assertNotNull(result.getCreatedAt());
     }

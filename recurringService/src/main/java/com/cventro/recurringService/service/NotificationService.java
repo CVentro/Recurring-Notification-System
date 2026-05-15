@@ -1,6 +1,7 @@
 package com.cventro.recurringService.service;
 
 import com.cventro.recurringService.entity.NotificationEvent;
+import com.cventro.recurringService.configuration.RetryConfig;
 import com.cventro.recurringService.enums.ScheduledType;
 import com.cventro.recurringService.enums.Status;
 import com.cventro.recurringService.repository.NotificationRepository;
@@ -15,8 +16,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NotificationService {
     private final NotificationRepository repository;
+    private final AwsAppConfigService awsAppConfigService;
 
     public NotificationEvent createNotificationEvent(NotificationEvent event){
+        RetryConfig retryConfig = awsAppConfigService.getRetryConfig();
+
         event.setEventId(UUID.randomUUID().toString());
         event.setCreatedAt(LocalDateTime.now());
         event.setExpireAt(LocalDateTime.now());
@@ -24,9 +28,9 @@ public class NotificationService {
         event.setStatus(Status.CREATED);
         event.setSentCount(0);
         event.setRetryCount(0);
-        event.setMaxRetryCount(5);
+        event.setMaxRetryCount(retryConfig.retryCount());
         event.setMaxCount(event.getScheduleType() == ScheduledType.FIXED_RECURRING ? event.getMaxCount() : 0);
-        event.setRetryBackoffMs(5000);
+        event.setRetryBackoffMs(retryConfig.retryInterval());
         return repository.save(event);
     }
 
