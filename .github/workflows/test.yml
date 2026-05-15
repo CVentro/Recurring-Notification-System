@@ -1,0 +1,27 @@
+name: Test
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Run service tests
+        run: |
+          ./eurekaServer/mvnw -f eurekaServer/pom.xml test
+          ./gatewayServer/mvnw -f gatewayServer/pom.xml test
+          ./infaService/mvnw -f infaService/pom.xml test
+          ./recurringService/mvnw -f recurringService/pom.xml test
+          ./notificationService/mvnw -f notificationService/pom.xml test
